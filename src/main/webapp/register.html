@@ -5,11 +5,41 @@
     <title>用户注册</title>
     <link rel="stylesheet" type="text/css" href="./css/login.css">
     <link rel="icon" href="./image/mi/favicon.ico" type="image/x-icon"/>
+    <style>
+        /*vue的跳动*/
+        .shake-animation {
+            animation: shake 0.5s;
+        }
+
+        @keyframes shake {
+            0% {
+                transform: translateX(0);
+            }
+            25% {
+                transform: translateX(-5px);
+            }
+            50% {
+                transform: translateX(5px);
+            }
+            75% {
+                transform: translateX(-5px);
+            }
+            100% {
+                transform: translateX(5px);
+            }
+        }
+
+        /*缓慢编译时*/
+        .submit {
+            transition: background-color 1s;
+        }
+
+    </style>
 
 </head>
 <body>
 <form method="post">
-    <div class="regist" id="app">
+    <div class="regist" id="register">
         <div class="regist_center">
             <div class="regist_top">
                 <div class="left fl">会员注册</div>
@@ -19,17 +49,26 @@
             </div>
             <div class="regist_main center">
                 <div class="username">用&nbsp;&nbsp;户&nbsp;&nbsp;名:&nbsp;&nbsp;
-                    <input v-model="userName" class="shurukuang" type="text" name="username"
+                    <input @change="validateUserNameFormat" v-model="userName" class="shurukuang" type="text"
+                           name="username"
                            placeholder="请输入你的用户名"/>
-                    <span>请不要输入汉字</span></div>
+                    <span :class="{ 'shake-animation': isShaking }"
+                          :style="usernameColor">请不要输入汉字</span></div>
                 <div class="username">密&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;码:&nbsp;&nbsp;
-                    <input v-model="password" class="shurukuang" type="password" name="password"
+                    <!--绑定多条的时候要写()-->
+                    <input @change="validatePasswordMethod();validatePasswordLength()" v-model="password"
+                           class="shurukuang"
+                           type="password"
+                           name="password"
                            placeholder="请输入你的密码"/>
-                    <span>请输入6位以上字符</span></div>
+                    <span :class="{ 'shake-animation': isShaking }"
+                          :style="passwordColor">请输入4位以上字符</span></div>
                 <div class="username">确认密码:&nbsp;&nbsp;
-                    <input v-model="validatePassword" class="shurukuang" type="password" name="repassword"
+                    <input @change="validatePasswordMethod" v-model="validatePassword" class="shurukuang"
+                           type="password" name="repassword"
                            placeholder="请确认你的密码"/>
-                    <span>两次密码要输入一致哦</span></div>
+                    <span :class="{ 'shake-animation': isShaking }"
+                          :style="validatePasswordColor">两次密码要输入一致哦</span></div>
                 <div class="username">手&nbsp;&nbsp;机&nbsp;&nbsp;号:&nbsp;&nbsp;
                     <input v-model="phone" class="shurukuang" type="text" name="tel" placeholder="请填写正确的手机号"/>
                     <span>填写下手机号吧，方便我们联系您！</span></div>
@@ -42,7 +81,8 @@
                 </div>
             </div>
             <div class="regist_submit">
-                <input @click.prevent="userRegister" class="submit" type="submit" name="submit" value="立即注册">
+                <input :style="submitColor" @click.prevent="userRegister" class="submit" type="submit" name="submit"
+                       value="立即注册">
             </div>
 
         </div>
@@ -54,36 +94,101 @@
 <script src="./js/axios.min.js"></script>
 <script>
     new Vue({
-        el: "#app",
+        el: "#register",
         data: {
+            // xxxColor 指的是提示词的字体颜色
             userName: '',
+            usernameColor: '',
             password: '',
+            passwordColor: '',
             validatePassword: '',
+            validatePasswordColor: '',
             phone: '',
+            phoneColor: '',
             verificationCode: '',
-            verificationCodeUrl: 'http://localhost:8080/XiaoMiShop_SSM_Vue/kaptcha.jpg'
+            verificationCodeUrl: '/XiaoMiShop_SSM_Vue/kaptcha.jpg',
+            //提示词跳动
+            isShaking: false,
+            //按钮颜色
+            submitColor: ''
         },
         methods: {
-            //更新验证码
-            refreshVerificationCodeUrl() {
-                this.verificationCodeUrl = 'http://localhost:8080/XiaoMiShop_SSM_Vue/kaptcha.jpg?d=' + new Date();
+            //验证用户名格式
+            validateUserNameFormat() {
+                //判断值是否为空 为空直接结束
+                if (!this.userName) {
+                    return null;
+                }
+                const regex = /^[^\u4e00-\u9fa5]*$/; //匹配除中文字符之外的任何字符
+                if (!regex.test(this.userName)) {
+                    this.usernameColor = "color:red";
+                    //文字跳动
+                    this.shaking();
+                } else {
+                    this.usernameColor = "";
+                }
+            },
+
+            //验证密码长度
+            validatePasswordLength() {
+                if (this.password && this.password.length < 4) {
+                    this.passwordColor = "color:red";
+                    //文字跳动
+                    this.shaking();
+                } else {
+                    this.passwordColor = "";
+                }
             },
 
             //验证密码是否相同
-            validatePasswordMethod(){
+            validatePasswordMethod() {
+                if (this.password !== this.validatePassword && this.validatePassword) {
+                    this.validatePasswordColor = "color:red";
+                    //文字跳动
+                    this.shaking()
+                } else {
+                    this.validatePasswordColor = "";
+                }
+            },
 
+            //更新验证码
+            refreshVerificationCodeUrl() {
+                this.verificationCodeUrl = '/XiaoMiShop_SSM_Vue/kaptcha.jpg?d=' + Math.random();
             },
 
             //注册
             userRegister() {
                 axios.post(
                     "user/register",
-                    {
-                        userName: this.userName,
-                        userPassword: this.password,
-                        userPhone: this.phone
+                    `userName=${this.userName}&userPassword=${this.password}&userPhone=${this.phone}&verificationCode=${this.verificationCode}`
+                ).then((result) => {
+                    let data = result.data;
+                    if (data.code === 200){
+                        //Todo
                     }
-                );
+
+                });
+            },
+
+            // --------其它---------
+            //抖动
+            shaking() {
+                this.isShaking = true;
+                setTimeout(() => {
+                    this.isShaking = false;
+                }, 500); // 设置一个合适的时间来停止动画
+            }
+        },
+        updated: function () {
+            //对submit颜色的控制
+            if ((!this.usernameColor && this.userName) &&
+                (!this.passwordColor && this.password) &&
+                (!this.validatePasswordColor && this.validatePassword) &&
+                (!this.phoneColor && this.phone) &&
+                (this.verificationCode)) {
+                this.submitColor = "background: #ff6700"
+            } else {
+                this.submitColor = "background: #aaaaaa"
             }
         }
     });
