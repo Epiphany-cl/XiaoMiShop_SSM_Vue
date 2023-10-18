@@ -10,7 +10,72 @@
   - user表(id、用户名、手机号、密码、个性签名、爱好、收货地址)
   - register.html
 
+---
 
+1. **用户表 (User)**
+  - UserID (主键)
+  - Username
+  - Password (存储哈希值)
+  - Email
+  - PhoneNumber
+  - Address
+  - ... (其他个人信息)
+
+2. **产品类别表 (ProductCategory)**
+  - CategoryID (主键)
+  - CategoryName
+
+3. **产品表 (Product)**
+  - ProductID (主键)
+  - ProductName
+  - Description
+  - Price
+  - ImageURL
+  - CategoryID (外键，引用 ProductCategory 的 CategoryID)
+  - StockQuantity (库存数量)
+  - ... (其他产品相关信息)
+
+4. **订单表 (Order)**
+  - OrderID (主键)
+  - UserID (外键，引用 User 的 UserID)
+  - OrderDate
+  - TotalAmount
+  - OrderStatus
+  - ... (其他订单相关信息)
+
+5. **订单详细信息表 (OrderDetail)**
+  - DetailID (主键)
+  - OrderID (外键，引用 Order 的 OrderID)
+  - ProductID (外键，引用 Product 的 ProductID)
+  - Quantity
+  - Subtotal
+
+6. **购物车表 (ShoppingCart)**
+  - CartID (主键)
+  - UserID (外键，引用 User 的 UserID)
+  - ProductID (外键，引用 Product 的 ProductID)
+  - Quantity
+
+7. **用户反馈表 (UserFeedback)**
+  - FeedbackID (主键)
+  - UserID (外键，引用 User 的 UserID)
+  - FeedbackContent
+  - FeedbackDate
+
+8. **用户收藏表 (UserFavorites)**
+  - FavoriteID (主键)
+  - UserID (外键，引用 User 的 UserID)
+  - ProductID (外键，引用 Product 的 ProductID)
+
+9. **产品评论表 (ProductReviews)**
+  - ReviewID (主键)
+  - ProductID (外键，引用 Product 的 ProductID)
+  - UserID (外键，引用 User 的 UserID)
+  - ReviewContent
+  - ReviewDate
+  - Rating
+
+这些表结构是基于提供的HTML文件内容和常见的电商网站功能进行推断的。在实际开发过程中，可能需要根据业务需求进行进一步的调整和优化。此外，还需要考虑如何实现数据之间的关系、索引、约束等。
 
 
 数据库表结构与数据：
