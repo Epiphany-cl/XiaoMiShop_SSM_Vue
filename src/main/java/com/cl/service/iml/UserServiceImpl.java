@@ -12,8 +12,9 @@ import java.util.List;
 @Service
 public class UserServiceImpl implements UserService {
 
+
     @Autowired
-    private  UserMapper  userMapper;
+    private UserMapper userMapper;
 
     @Override
     public boolean isUserExist(String userName) {
@@ -24,5 +25,10 @@ public class UserServiceImpl implements UserService {
         }
         List<User> users = userMapper.selectByExample(userExample);
         return !users.isEmpty();
+    }
+
+    @Override
+    public boolean register(User user) {
+        return userMapper.insertSelective(user) > 0;
     }
 }

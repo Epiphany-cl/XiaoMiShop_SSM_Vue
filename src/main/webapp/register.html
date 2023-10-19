@@ -34,6 +34,70 @@
             transition: background-color 1s;
         }
 
+        /*模态框*/
+        .modal {
+            display: block;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 20%;
+        }
+
+        /*关闭按钮的样式*/
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        /**/
+        /* h1 样式 */
+        .modal-content h1 {
+            font-size: 24px;
+            color: #333;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        /* a 标签样式 */
+        .modal-content a {
+            display: block; /* 使a标签占据整行 */
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 20px auto; /* 上下边距为20px，左右边距自动，使a标签居中 */
+            width: fit-content; /* 使a标签的宽度仅包围其内容 */
+            transition: background-color 0.3s;
+        }
+
+        /* a 标签鼠标悬停效果 */
+        .modal-content a:hover {
+            background-color: #0056b3; /* 深蓝色背景 */
+        }
+
+
     </style>
 
 </head>
@@ -70,8 +134,9 @@
                     <span :class="{ 'shake-animation': isShaking }"
                           :style="validatePasswordColor">两次密码要输入一致哦</span></div>
                 <div class="username">手&nbsp;&nbsp;机&nbsp;&nbsp;号:&nbsp;&nbsp;
-                    <input v-model="phone" class="shurukuang" type="text" name="tel" placeholder="请填写正确的手机号"/>
-                    <span>填写下手机号吧，方便我们联系您！</span></div>
+                    <input @change="validatePhoneFormat" v-model="phone" class="shurukuang" type="text" name="tel" placeholder="请填写正确的手机号"/>
+                    <span :class="{ 'shake-animation': isShaking }"
+                          :style="phoneColor">填写下手机号吧，方便我们联系您！</span></div>
                 <div class="username">
                     <div class="left fl">验&nbsp;&nbsp;证&nbsp;&nbsp;码:&nbsp;&nbsp;
                         <input v-model="verificationCode" class="yanzhengma" type="text" name="username"
@@ -84,10 +149,19 @@
                 <input :style="submitColor" @click.prevent="userRegister" class="submit" type="submit" name="submit"
                        value="立即注册">
             </div>
+        </div>
 
+        <!--模模态框-->
+        <div v-if="showModal" class="modal">
+            <div class="modal-content">
+                <span @click="showModal = false" class="close">&times;</span>
+                <div v-html="modalContent"></div>
+            </div>
         </div>
     </div>
 </form>
+
+
 </body>
 </html>
 <script src="./js/vue-2.4.0.js"></script>
@@ -110,7 +184,10 @@
             //提示词跳动
             isShaking: false,
             //按钮颜色
-            submitColor: ''
+            submitColor: '',
+            //模态框
+            showModal: false,
+            modalContent: ''
         },
         methods: {
             //验证用户名格式
@@ -140,6 +217,18 @@
                 }
             },
 
+            //判断手机号格式
+            validatePhoneFormat(){
+              const regex = /^(?:(?:\+|00)86)?1\d{10}$/;
+              if (!regex.test(this.phone)){
+                  this.phoneColor = "color:red";
+                  //文字跳动
+                  this.shaking();
+              }else {
+                  this.phoneColor = "";
+              }
+            },
+
             //验证密码是否相同
             validatePasswordMethod() {
                 if (this.password !== this.validatePassword && this.validatePassword) {
@@ -158,15 +247,27 @@
 
             //注册
             userRegister() {
+                //如果注册按钮是灰色 直return
+                if (this.submitColor === "background: #aaaaaa") {
+                    return null;
+                }
+
+                //注册
                 axios.post(
                     "user/register",
                     `userName=${this.userName}&userPassword=${this.password}&userPhone=${this.phone}&verificationCode=${this.verificationCode}`
                 ).then((result) => {
                     let data = result.data;
-                    if (data.code === 200){
-
+                    //注册成功
+                    if (data.code === 200) {
+                        this.modalContent = "<h1>注册成功</h1><a href=\"login.html\">立即登录</a>";
+                        this.showModal = true;
+                    } else {
+                        this.modalContent = "<h1 style='color: red'>" + data.msg + "</h1>";
+                        this.showModal = true;
                     }
-
+                    //刷新验证码
+                    this.refreshVerificationCodeUrl();
                 });
             },
 
@@ -186,9 +287,9 @@
                 (!this.validatePasswordColor && this.validatePassword) &&
                 (!this.phoneColor && this.phone) &&
                 (this.verificationCode)) {
-                this.submitColor = "background: #ff6700"
+                this.submitColor = "background: #ff6700";
             } else {
-                this.submitColor = "background: #aaaaaa"
+                this.submitColor = "background: #aaaaaa";
             }
         }
     });

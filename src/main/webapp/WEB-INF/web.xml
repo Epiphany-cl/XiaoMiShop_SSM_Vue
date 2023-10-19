@@ -6,6 +6,20 @@
          version="4.0">
   <display-name>Archetype Created Web Application</display-name>
 
+  <listener>
+    <!--
+    配置Spring的监听器，在服务器启动时加载Spring的配置文件
+    Spring配置文件默认位置和名称：/WEB-INF/applicationContext.xml 可通过上下文参数自定义Spring配置文件的位置和名称
+    -->
+    <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+  </listener>
+
+  <!--自定义Spring配置文件的位置和名称-->
+  <context-param>
+    <param-name>contextConfigLocation</param-name>
+    <param-value>classpath:spring.xml</param-value>
+  </context-param>
+
   <!-- 配置SpringMVC的前端控制器，对浏览器发送的请求统一进行处理 -->
   <servlet>
     <servlet-name>springMVC</servlet-name>
