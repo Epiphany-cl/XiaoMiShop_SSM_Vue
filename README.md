@@ -8,18 +8,21 @@
 - [x] 整体网页的分析
 - [x] 注册
   - user表(id、用户名、手机号、密码、个性签名、爱好、收货地址)
-  - register.html 
 
 ### 2023年10月19日
 
 - [x] 登录
+- [x] 商品展示
+  - 产品表 (ProductId、商品名、简单描述、详细描述、起售价、图片、商品类别、创建时间、修改时间)
+  - 产品配置表(ProductConfigId、ProductId、Config) 一对多
+  - 产品颜色表(ProductColorId、ProductId、Color)
 
 ---
 
 1. **用户表 (User)**
   - UserID (主键)
   - Username
-  - Password (存储哈希值)
+  - Password
   - Email
   - PhoneNumber
   - Address

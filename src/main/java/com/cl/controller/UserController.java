@@ -5,6 +5,7 @@ import com.cl.pojo.User;
 import com.cl.service.UserService;
 import com.cl.vo.ResultVO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,7 +19,7 @@ import static com.google.code.kaptcha.Constants.KAPTCHA_SESSION_KEY;
 public class UserController {
 
     @Autowired
-    private  UserService userService;
+    private UserService userService;
 
     //http://localhost:8080/XiaoMiShop_SSM_Vue/kaptcha.jpg 验证码
     //http://localhost:8080/XiaoMiShop_SSM_Vue/register.html
@@ -48,5 +49,23 @@ public class UserController {
         }
 
         return new ResultVO<>(444, "注册失败");
+    }
+
+    //http://localhost:8080/XiaoMiShop_SSM_Vue/login.html
+    @RequestMapping("/getUserInfo")
+    public ResultVO<User> getUserInfo(HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        return new ResultVO<>(user);
+    }
+
+    @RequestMapping("/login")
+    public ResultVO<User> login(HttpSession session,
+                                @RequestBody User user) {
+        //验证密码
+        if (userService.login(user)) {
+            session.setAttribute("user", user);
+            return new ResultVO<>(200, "登录成功");
+        }
+        return new ResultVO<>(444, "登录失败");
     }
 }

@@ -93,10 +93,10 @@
             &lt;!&ndash;<property name="useActualColumnNames" value="false" />&ndash;&gt;
         </table>-->
         
-        <!--<table tableName="cartitem" domainObjectName="CartItem"/>-->
-        <table tableName="t_user" domainObjectName="User"/>
-        <!--<table tableName="t_order" domainObjectName="Order"/>-->
-        <!--<table tableName="t_order_item" domainObjectName="OrderItem"/>-->
         <!--<table tableName="t_user" domainObjectName="User"/>-->
+        <table tableName="t_product" domainObjectName="Product"/>
+
+
+
     </context>
 </generatorConfiguration>

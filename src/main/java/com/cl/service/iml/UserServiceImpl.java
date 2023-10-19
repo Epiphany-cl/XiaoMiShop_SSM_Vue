@@ -31,4 +31,18 @@ public class UserServiceImpl implements UserService {
     public boolean register(User user) {
         return userMapper.insertSelective(user) > 0;
     }
+
+    @Override
+    public boolean login(User user) {
+        UserExample userExample = new UserExample();
+        UserExample.Criteria criteria = userExample.createCriteria();
+        if (user.getUserName() != null && !user.getUserName().trim().isEmpty()) {
+            criteria.andUserNameEqualTo(user.getUserName());
+        }
+        if (user.getUserPassword() != null && !user.getUserPassword().trim().isEmpty()) {
+            criteria.andUserPasswordEqualTo(user.getUserPassword());
+        }
+        List<User> users = userMapper.selectByExample(userExample);
+        return !users.isEmpty();
+    }
 }
