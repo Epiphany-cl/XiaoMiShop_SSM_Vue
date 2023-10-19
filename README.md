@@ -14,8 +14,46 @@
 - [x] 登录
 - [x] 商品展示
   - 产品表 (ProductId、商品名、简单描述、详细描述、起售价、图片、商品类别、创建时间、修改时间)
-  - 产品配置表(ProductConfigId、ProductId、Config) 一对多
+  - 产品配置表(ProductConfigId、ProductId、Config、价格) 一对多
   - 产品颜色表(ProductColorId、ProductId、Color)
+  - 产品分类表
+
+产品展示时原理
+```html
+<template>
+  <div>
+    <!-- 遍历 chunkedArr -->
+    <div v-for="(chunk, index) in chunkedArr" :key="index">
+      <!-- 遍历每个子数组 -->
+      <div v-for="item in chunk" :key="item">
+        {{ item }}
+      </div>
+      -----
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      arr: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    };
+  },
+  computed: {
+    // 将 arr 分割成大小为 5 的子数组
+    chunkedArr() {
+      let result = [];
+      for (let i = 0; i < this.arr.length; i += 5) {
+        result.push(this.arr.slice(i, i + 5));
+      }
+      return result;
+    }
+  }
+};
+</script>
+
+```
 
 ---
 

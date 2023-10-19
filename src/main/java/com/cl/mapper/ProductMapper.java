@@ -3,11 +3,8 @@ package com.cl.mapper;
 import com.cl.pojo.Product;
 import com.cl.pojo.ProductExample;
 import java.util.List;
-
-import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
-@Mapper
 public interface ProductMapper {
     int countByExample(ProductExample example);
 

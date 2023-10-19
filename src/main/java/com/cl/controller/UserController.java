@@ -1,6 +1,5 @@
 package com.cl.controller;
 
-
 import com.cl.pojo.User;
 import com.cl.service.UserService;
 import com.cl.vo.ResultVO;
@@ -12,7 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpSession;
 
 import static com.google.code.kaptcha.Constants.KAPTCHA_SESSION_KEY;
-
 
 @RestController
 @RequestMapping("/user")
