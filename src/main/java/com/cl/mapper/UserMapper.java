@@ -3,8 +3,12 @@ package com.cl.mapper;
 import com.cl.pojo.User;
 import com.cl.pojo.UserExample;
 import java.util.List;
-import org.apache.ibatis.annotations.Param;
 
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
+
+@Mapper
 public interface UserMapper {
     int countByExample(UserExample example);
 
