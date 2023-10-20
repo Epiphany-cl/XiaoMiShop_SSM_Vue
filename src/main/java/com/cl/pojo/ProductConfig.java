@@ -42,4 +42,14 @@ public class ProductConfig {
     public void setProductPrice(BigDecimal productPrice) {
         this.productPrice = productPrice;
     }
+
+    @Override
+    public String toString() {
+        return "ProductConfig{" +
+                "productConfigId=" + productConfigId +
+                ", productId=" + productId +
+                ", productConfig='" + productConfig + '\'' +
+                ", productPrice=" + productPrice +
+                '}';
+    }
 }

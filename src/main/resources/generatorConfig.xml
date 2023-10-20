@@ -93,13 +93,11 @@
             &lt;!&ndash;<property name="useActualColumnNames" value="false" />&ndash;&gt;
         </table>-->
         
-<!--
-        <table tableName="t_user" domainObjectName="User"/>
-        <table tableName="t_product" domainObjectName="Product"/>
+        <!--<table tableName="t_user" domainObjectName="User"/>-->
+        <!--<table tableName="t_product" domainObjectName="Product"/>-->
         <table tableName="t_product_color" domainObjectName="ProductColor"/>
-        <table tableName="t_product_config" domainObjectName="ProductConfig"/>
-        <table tableName="t_product_category" domainObjectName="ProductCategory"/>
--->
+        <!--<table tableName="t_product_config" domainObjectName="ProductConfig"/>-->
+        <!--<table tableName="t_product_category" domainObjectName="ProductCategory"/>-->
 
     </context>
 </generatorConfiguration>

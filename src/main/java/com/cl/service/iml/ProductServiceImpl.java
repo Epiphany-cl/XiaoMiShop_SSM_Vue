@@ -1,8 +1,9 @@
 package com.cl.service.iml;
 
+import com.cl.mapper.ProductColorMapper;
+import com.cl.mapper.ProductConfigMapper;
 import com.cl.mapper.ProductMapper;
-import com.cl.pojo.Product;
-import com.cl.pojo.ProductExample;
+import com.cl.pojo.*;
 import com.cl.service.ProductService;
 import com.cl.vo.ResultVO;
 import com.github.pagehelper.ISelect;
@@ -19,6 +20,12 @@ public class ProductServiceImpl implements ProductService {
     @Autowired
     private ProductMapper productMapper;
 
+    @Autowired
+    private ProductConfigMapper productConfigMapper;
+
+    @Autowired
+    private ProductColorMapper productColorMapper;
+
     @Override
     public PageInfo<Product> list(int categoryId, int pageNum) {
         ProductExample productExample = new ProductExample();
@@ -29,5 +36,30 @@ public class ProductServiceImpl implements ProductService {
         }
 
         return PageHelper.startPage(1, 10 * pageNum).doSelectPageInfo(() -> productMapper.selectByExample(productExample));
+    }
+
+    @Override
+    public Product getProductById(int productId) {
+        return productMapper.selectByPrimaryKey(productId);
+    }
+
+    @Override
+    public List<ProductConfig> getProductConfig(int productId) {
+        ProductConfigExample productConfigExample = new ProductConfigExample();
+        ProductConfigExample.Criteria criteria = productConfigExample.createCriteria();
+        if (productId != 0) {
+            criteria.andProductIdEqualTo(productId);
+        }
+        return productConfigMapper.selectByExample(productConfigExample);
+    }
+
+    @Override
+    public List<ProductColor> getProductColor(int productId) {
+        ProductColorExample productColorExample = new ProductColorExample();
+        ProductColorExample.Criteria criteria = productColorExample.createCriteria();
+        if (productId != 0) {
+            criteria.andProductIdEqualTo(productId);
+        }
+        return productColorMapper.selectByExample(productColorExample);
     }
 }

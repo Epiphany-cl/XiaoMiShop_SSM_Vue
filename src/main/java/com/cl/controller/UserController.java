@@ -53,6 +53,9 @@ public class UserController {
     @RequestMapping("/getUserInfo")
     public ResultVO<User> getUserInfo(HttpSession session) {
         User user = (User) session.getAttribute("user");
+        if (user == null) {
+            return new ResultVO<>(400, "用户未登录");
+        }
         return new ResultVO<>(user);
     }
 
@@ -61,9 +64,15 @@ public class UserController {
                                 @RequestBody User user) {
         //验证密码
         if (userService.login(user)) {
-            session.setAttribute("user", user);
+            session.setAttribute("user", userService.getUserByUserName(user.getUserName()));
             return new ResultVO<>(200, "登录成功");
         }
         return new ResultVO<>(444, "登录失败");
+    }
+
+    @RequestMapping("/logout")
+    public ResultVO<Object> logout(HttpSession session) {
+        session.removeAttribute("user");
+        return new ResultVO<>(200, "退出成功");
     }
 }
