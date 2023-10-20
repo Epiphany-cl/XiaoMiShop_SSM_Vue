@@ -18,7 +18,7 @@
     <div class="top center" id="header">
         <div class="left fl">
             <ul>
-                <li><a href="https://www.mi.com/shop" >小米商城</a></li>
+                <li><a href="https://www.mi.com/shop">小米商城</a></li>
                 <li><a href="https://home.miui.com/">MIUI</a></li>
                 <li><a href="//iot.mi.com">IoT</a></li>
                 <li><a href="//i.mi.com/">云服务</a></li>
@@ -90,7 +90,7 @@
 
 <!-- start banner_x -->
 <div class="banner_x center">
-    <a href="./index.html" >
+    <a href="./index.html">
         <div class="logo fl"></div>
     </a>
     <a href="">
@@ -208,13 +208,12 @@
 </footer>
 </body>
 </html>
-<script src="./js/vue-2.4.0.js"></script>
+<script src="https://unpkg.com/vue@2/dist/vue.js"></script>
 <script src="./js/axios.min.js"></script>
 <script>
     new Vue({
         el: "#productDetails",
         data: {
-            userinfo:'',
             productId: '',
             product: '',
             productConfig: [],
@@ -259,17 +258,24 @@
                     }
                 });
             },
-            // 加入购物车
-            addShoppingCart(){
-                console.log(headerVm.userinfo)
-            },
             // 立即购买
-            buyProduct(){
+            buyProduct() {
 
             },
-            //获取user
-            getUserInfo(){
-
+            // 加入购物车
+            addShoppingCart() {
+                if (headerVm.userinfo) {
+                    axios.post(
+                        'shoppingCart/addShoppingCartByProductId',
+                        `productId=${this.productId}`
+                    ).then(result => {
+                        if (result.data.code === 200) {
+                            window.location.href = "gouwuche.html";
+                        } else {
+                            alert("添加失败")
+                        }
+                    });
+                }
             },
             //初始化
             initialization() {
@@ -287,7 +293,7 @@
             selectedProduct: function () {
                 // 小米6 | 6GB+64GB | 亮黑色
                 if (this.product && this.productConfig[this.selectedConfigIndex] && this.productColor[this.selectedColorIndex]) {
-                    return this.product.productName +" | "+ this.productConfig[this.selectedConfigIndex].productConfig +" | "+ this.productColor[this.selectedColorIndex].productColor;
+                    return this.product.productName + " | " + this.productConfig[this.selectedConfigIndex].productConfig + " | " + this.productColor[this.selectedColorIndex].productColor;
                 }
                 return '';
             }
