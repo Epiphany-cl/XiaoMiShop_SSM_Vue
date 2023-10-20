@@ -25,6 +25,7 @@
 - [x] 购物车
   - 购物车表 ShoppingCart (id、uid、productid、quantity数量、选中状态)
 - [x] 商品页添加购物车
+- [x] 购物车显示
 
 
 产品展示时原理

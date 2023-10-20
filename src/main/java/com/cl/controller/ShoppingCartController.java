@@ -1,6 +1,5 @@
 package com.cl.controller;
 
-import com.cl.config.SpringConfig;
 import com.cl.pojo.ShoppingCart;
 import com.cl.pojo.User;
 import com.cl.service.ShoppingCartService;
@@ -18,7 +17,10 @@ public class ShoppingCartController {
     private ShoppingCartService shoppingCartService;
 
     @RequestMapping("/addShoppingCartByProductId")
-    public ResultVO<Object> addShoppingCartByProductId(HttpSession session, Integer productId) {
+    public ResultVO<Object> addShoppingCartByProductId(HttpSession session,
+                                                       Integer productId,
+                                                       Integer productConfigId,
+                                                       Integer productColorId) {
         ShoppingCart shoppingCart = new ShoppingCart();
 
         User user = (User) session.getAttribute("user");
@@ -28,6 +30,8 @@ public class ShoppingCartController {
         shoppingCart.setUserId(userId);
         shoppingCart.setCartStauts(1);
         shoppingCart.setProductQuantity(1);
+        shoppingCart.setProductConfigId(productConfigId);
+        shoppingCart.setProductColorId(productColorId);
 
         boolean b = shoppingCartService.addShoppingCart(shoppingCart);
 
