@@ -28,6 +28,6 @@ public class ProductServiceImpl implements ProductService {
             criteria.andProductCategoryIdEqualTo(categoryId);
         }
 
-        return PageHelper.startPage(pageNum, 10).doSelectPageInfo(() -> productMapper.selectByExample(productExample));
+        return PageHelper.startPage(1, 10 * pageNum).doSelectPageInfo(() -> productMapper.selectByExample(productExample));
     }
 }

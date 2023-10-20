@@ -6,6 +6,27 @@
     <link rel="stylesheet" type="text/css" href="./css/style.css">
     <link rel="icon" href="./image/mi/favicon.ico" type="image/x-icon"/>
 
+    <style>
+        .loading {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            margin: 0 auto;
+            border: 4px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top: 4px solid #000;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
 </head>
 <body>
 <!-- start header -->
@@ -97,21 +118,33 @@
     <div class="biaoti center">小米手机</div>
     <div v-for="(chunk,index) in chunkedArr" :ked="index">
         <div class="main center">
-            <div v-for="item in chunk" :key="item.productId" class="mingxing fl mb20" style="border:2px solid #fff;width:230px;cursor:pointer;"
-                 onmouseout="this.style.border='2px solid #fff'" onmousemove="this.style.border='2px solid red'">
-                <div class="sub_mingxing"><a href="./xiangqing.html" target="_blank"><img
-                        src="./image/liebiao_xiaomi6.jpg"
-                        alt=""></a></div>
-                <div class="pinpai"><a href="./xiangqing.html" target="_blank">小米6</a></div>
-                <div class="youhui">5.16早10点开售</div>
-                <div class="jiage">2499.00元</div>
+            <div v-for="item in chunk" :key="item.productId"
+                 class="mingxing fl mb20"
+                 style="border:2px solid #fff;width:230px;cursor:pointer;"
+                 onmouseout="this.style.border='2px solid #fff'"
+                 onmousemove="this.style.border='2px solid red'">
+                <div class="sub_mingxing">
+                    <a :href="'./xiangqing.html?productId=' + item.productId" target="_blank">
+                        <img :src="item.productImgPath" alt="">
+                    </a>
+                </div>
+                <div class="pinpai">
+                    <a :href="'./xiangqing.html?productId=' + item.productId" target="_blank">{{item.productName}}</a>
+                </div>
+                <div class="youhui">{{item.productSketch}}</div>
+                <div class="jiage">{{item.productStratingPrice}}元</div>
             </div>
             <div class="clear"></div>
         </div>
     </div>
+    <!--loading动画-->
     <div class="clear"></div>
+    <div class="loading" v-if="isLoading">
+        <div class="spinner"></div>
+    </div>
+
 </div>
-</div>
+
 
 <footer class="mt20 center">
     <div class="mt20">小米商城|MIUI|米聊|多看书城|小米路由器|视频电话|小米天猫店|小米淘宝直营店|小米网盟|小米移动|隐私政策|Select
@@ -131,9 +164,55 @@
             //类型
             categoryId: 0,
             pageNum: 1,
-            productList: []
+            productList: [],
+            pageTotal:0,
+            //加载动画
+            isLoading:false
         },
-        methods: {},
+        methods: {
+            getProductLit() {
+                this.categoryId = new URLSearchParams(window.location.search).get("categoryId");
+                axios.post(
+                    "product/list",
+                    `categoryId=${this.categoryId}&pageNum=${this.pageNum}`
+                ).then(result => {
+                    let data = result.data;
+                    console.log(data)
+                    this.productList = data.pageInfo.list;
+                    this.pageTotal = data.pageInfo.total;
+                    this.isLoading = false;  // 隐藏加载动画
+                });
+            },
+
+
+            //滚动到最低端触发
+            handleScroll() {
+                // 检查是否滚动到页面底部
+                if ((window.innerHeight + window.scrollY) + 5 >= document.body.offsetHeight) {
+                    console.log(window.innerHeight + window.scrollY + "|" + document.body.offsetHeight)
+                    //判断是否加载完全
+                    if (this.productList.length !== this.pageTotal ){
+                        this.isLoading = true;  // 显示加载动画
+                        this.pageNum = this.pageNum + 1;
+                        setTimeout(() => this.getProductLit(),500);
+                    }
+
+                }
+            },
+            //节流 为了避免多次触发scroll事件
+            throttle(func, delay) {
+                let lastCall = 0;
+                return function () {
+                    const now = new Date().getTime();
+                    if (now - lastCall < delay) {
+                        return;
+                    }
+                    lastCall = now;
+                    return func.apply(this);
+                };
+            }
+
+        },
         computed: {
             // 将 arr 分割成大小为 5 的子数组
             chunkedArr() {
@@ -145,14 +224,11 @@
             }
         },
         mounted: function () {
-            this.categoryId = new URLSearchParams(window.location.search).get("categoryId");
-            axios.post(
-                "product/list",
-                `categoryId=${this.categoryId}&pageNum=${this.pageNum}`
-            ).then(result => {
-                let data = result.data;
-                this.productList = data.pageInfo.list;
-            });
+            //初始化页面
+            this.getProductLit();
+
+            // 为window添加scroll事件监听器
+            window.addEventListener('scroll', this.handleScroll); // 200ms为延迟时间
         }
     });
 </script>
