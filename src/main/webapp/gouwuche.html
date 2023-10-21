@@ -44,7 +44,7 @@
                 <input class="shuliang" type="number" v-model:value="item.productQuantity" step="1" min="1">
             </div>
             <div class="sub_content fl">{{item.productPrice * item.productQuantity}}￥</div>
-            <div class="sub_content fl"><a href="">×</a></div>
+            <div class="sub_content fl"><a href="" @click.prevent="deleteCartById(item.cartId)">×</a></div>
             <div class="clear"></div>
         </div>
     </div>
@@ -106,6 +106,18 @@
                 ).then(result => {
                     console.log(result.data)
                     this.getShoppingCartList();
+                });
+            },
+            //删除
+            deleteCartById(cartId) {
+                axios.post(
+                    'shoppingCart/deleteShoppingCartByCartId',
+                    'cartId=' + cartId
+                ).then(result =>{
+                    console.log(result.data);
+                    if(result.data.code === 200){
+                        this.getShoppingCartList();
+                    }
                 });
             }
         },

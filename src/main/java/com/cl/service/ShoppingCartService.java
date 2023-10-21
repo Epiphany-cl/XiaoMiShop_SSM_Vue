@@ -13,4 +13,6 @@ public interface ShoppingCartService {
     boolean changeProductStatusByCartId(Integer cartId);
 
     boolean changeAllStatusByUserId(Boolean selectAllStatus, Integer userId);
+
+    boolean deleteShoppingCartByCartId(Integer cartId);
 }

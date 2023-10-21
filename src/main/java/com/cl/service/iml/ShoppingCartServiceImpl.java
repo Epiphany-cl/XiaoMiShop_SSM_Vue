@@ -106,4 +106,12 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
         return i > 0;
     }
+
+    @Override
+    public boolean deleteShoppingCartByCartId(Integer cartId) {
+        int i = shoppingCartMapper.deleteByPrimaryKey(cartId);
+        return i > 0;
+    }
+
+
 }
