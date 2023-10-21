@@ -1,103 +1,155 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="UTF-8">
-		<title>我的购物车-小米商城</title>
-		<link rel="stylesheet" type="text/css" href="./css/style.css"><link rel="icon" href="./image/mi/favicon.ico" type="image/x-icon" />
+<head>
+    <meta charset="UTF-8">
+    <title>我的购物车-小米商城</title>
+    <link rel="stylesheet" type="text/css" href="./css/style.css">
+    <link rel="icon" href="./image/mi/favicon.ico" type="image/x-icon"/>
 
-	</head>
-	<body>
-	<!-- start header -->
-	<!--end header -->
+</head>
+<body>
+<!-- start header -->
+<!--end header -->
 
 <!-- start banner_x -->
-		<div class="banner_x center">
-			<a href="./index.html" ><div class="logo fl"></div></a>
-			<div class="clear"></div>
-		</div>
-		<div class="xiantiao"></div>
-		<div class="gwcxqbj" id="shoppingCart">
-			<div class="gwcxd center">
-				<div class="top2 center">
-					<div class="sub_top fl">
-						<input type="checkbox" value="quanxuan" class="quanxuan" />全选
-					</div>
-					<div class="sub_top fl">商品名称</div>
-					<div class="sub_top fl">单价</div>
-					<div class="sub_top fl">数量</div>
-					<div class="sub_top fl">小计</div>
-					<div class="sub_top fr">操作</div>
-					<div class="clear"></div>
-				</div>
-				<div class="content2 center">
-					<div class="sub_content fl ">
-						<input type="checkbox" value="quanxuan" class="quanxuan" />
-					</div>
-					<div class="sub_content fl"><img src="./image/gwc_xiaomi6.jpg"></div>
-					<div class="sub_content fl ft20">小米6全网通6GB内存+64GB 亮黑色</div>
-					<div class="sub_content fl ">2499元</div>
-					<div class="sub_content fl">
-						<input class="shuliang" type="number" value="1" step="1" min="1" >
-					</div>
-					<div class="sub_content fl">2499元</div>
-					<div class="sub_content fl"><a href="">×</a></div>
-					<div class="clear"></div>
-				</div>
-				<div class="content2 center">
-					<div class="sub_content fl ">
-						<input type="checkbox" value="quanxuan" class="quanxuan" />
-					</div>
-					<div class="sub_content fl"><img src="./image/gwc_xiaomi6.jpg"></div>
-					<div class="sub_content fl ft20">小米6全网通6GB内存+64GB 亮黑色</div>
-					<div class="sub_content fl ">2499元</div>
-					<div class="sub_content fl">
-						<input class="shuliang" type="number" value="1" step="1" min="1" >
-					</div>
-					<div class="sub_content fl">2499元</div>
-					<div class="sub_content fl"><a href="">×</a></div>
-					<div class="clear"></div>
-				</div>
-			</div>
-			<div class="jiesuandan mt20 center">
-				<div class="tishi fl ml20">
-					<ul>
-						<li><a href="./liebiao.html">继续购物</a></li>
-						<li>|</li>
-						<li>共<span>2</span>件商品，已选择<span>1</span>件</li>
-						<div class="clear"></div>
-					</ul>
-				</div>
-				<div class="jiesuan fr">
-					<div class="jiesuanjiage fl">合计（不含运费）：<span>2499.00元</span></div>
-					<div class="jsanniu fr"><input class="jsan" type="submit" name="jiesuan"  value="去结算"/></div>
-					<div class="clear"></div>
-				</div>
-				<div class="clear"></div>
-			</div>
-			
-		</div>
-	<!-- footer -->
-	<footer class="center">
-			
-			<div class="mt20">小米商城|MIUI|米聊|多看书城|小米路由器|视频电话|小米天猫店|小米淘宝直营店|小米网盟|小米移动|隐私政策|Select Region</div>
-			<div>©mi.com 京ICP证110507号 京ICP备10046444号 京公网安备11010802020134号 京网文[2014]0059-0009号</div> 
-			<div>违法和不良信息举报电话：185-0130-1238，本网站所列数据，除特殊说明，所有数据均出自我司实验室测试</div>
-		</footer>
-	</body>
+<div class="banner_x center">
+    <a href="./index.html">
+        <div class="logo fl"></div>
+    </a>
+    <div class="clear"></div>
+</div>
+<div class="xiantiao"></div>
+<div class="gwcxqbj" id="shoppingCart">
+    <div class="gwcxd center">
+        <div class="top2 center">
+            <div class="sub_top fl">
+                <input v-model:checked="selectAllStatus" type="checkbox" value="quanxuan" class="quanxuan"/>全选
+            </div>
+            <div class="sub_top fl">商品名称</div>
+            <div class="sub_top fl">单价</div>
+            <div class="sub_top fl">数量</div>
+            <div class="sub_top fl">小计</div>
+            <div class="sub_top fr">操作</div>
+            <div class="clear"></div>
+        </div>
+        <div v-for="(item,index) in shoppingCartList" :key="index" class="content2 center">
+            <div class="sub_content fl ">
+                <input @click.prevent="changeProductStatus(item.cartId)" :checked="item.cartStatus === 1"
+                       type="checkbox" value="quanxuan" class="quanxuan"/>
+            </div>
+            <div class="sub_content fl"><img :src="item.productImg" width="80px" height="80px"></div>
+            <div class="sub_content fl ft20">{{item.productName}}</div>
+            <div class="sub_content fl ">{{item.productPrice}}元</div>
+            <div class="sub_content fl">
+                <input class="shuliang" type="number" v-model:value="item.productQuantity" step="1" min="1">
+            </div>
+            <div class="sub_content fl">{{item.productPrice * item.productQuantity}}￥</div>
+            <div class="sub_content fl"><a href="">×</a></div>
+            <div class="clear"></div>
+        </div>
+    </div>
+    <div class="jiesuandan mt20 center ">
+        <div class="tishi fl ml20">
+            <ul>
+                <li><a href="./index.html">继续购物</a></li>
+                <li>|</li>
+                <li>共<span>{{shoppingCartList.length}}</span>件商品，已选择<span>{{selectedNum}}</span>件</li>
+                <div class="clear"></div>
+            </ul>
+        </div>
+        <div class="jiesuan fr">
+            <div class="jiesuanjiage fl">合计（不含运费）：<span>{{totalPrice}}元</span></div>
+            <div class="jsanniu fr"><input class="jsan" type="submit" name="jiesuan" value="去结算"/></div>
+            <div class="clear"></div>
+        </div>
+        <div class="clear"></div>
+    </div>
+
+</div>
+<!-- footer -->
+<footer class="center fl">
+    <div class="mt20">小米商城|MIUI|米聊|多看书城|小米路由器|视频电话|小米天猫店|小米淘宝直营店|小米网盟|小米移动|隐私政策|Select
+        Region
+    </div>
+    <div>©mi.com 京ICP证110507号 京ICP备10046444号 京公网安备11010802020134号 京网文[2014]0059-0009号</div>
+    <div>违法和不良信息举报电话：185-0130-1238，本网站所列数据，除特殊说明，所有数据均出自我司实验室测试</div>
+</footer>
+</body>
 </html>
 <script src="https://unpkg.com/vue@2/dist/vue.js"></script>
 <script src="./js/axios.min.js"></script>
 <script>
-	new Vue({
-		el:"#shoppingCart",
-		data:{
+    new Vue({
+        el: "#shoppingCart",
+        data: {
+            shoppingCartList: [],
+            selectAllStatus: false
+        },
+        methods: {
+            //获得购物车列表 并且赋值
+            getShoppingCartList() {
+                axios.post(
+                    "shoppingCart/getShoppingCart"
+                ).then(result => {
+                    let data = result.data;
+                    if (data.code === 200) {
+                        this.shoppingCartList = data.list;
+                    }
+                    console.log(this.shoppingCartList)
+                });
+            },
+            //选择 并将选择状态取反
+            changeProductStatus(cartId) {
+                axios.post(
+                    'shoppingCart/changeProductStatus',
+                    'cartId=' + cartId
+                ).then(result => {
+                    console.log(result.data)
+                    this.getShoppingCartList();
+                });
+            }
+        },
+        computed: {
+            //选择数量
+            selectedNum: function () {
+                let count = 0;
+                for (let i = 0; i < this.shoppingCartList.length; i++) {
+                    if (this.shoppingCartList[i].cartStatus === 1) {
+                        count += 1;
+                    }
+                }
+                return count;
+            },
+            //价格计算
+            totalPrice: function () {
+                // 总价
+                let countPrice = 0;
+                for (let i = 0; i < this.shoppingCartList.length; i++) {
+                    if (this.shoppingCartList[i].cartStatus === 1) {
+                        countPrice += this.shoppingCartList[i].productPrice * this.shoppingCartList[i].productQuantity
+                    }
+                }
+                return countPrice;
+            }
 
-		},
-		methods:{
-
-		},
-		mounted:function (){
-
-		}
-	});
+        },
+        watch: {
+            //通过双向绑定和监控器 进行全选和全不选
+            'selectAllStatus': function () {
+                console.log(this.selectAllStatus)
+                axios.post(
+                    'shoppingCart/changeAllStatus',
+                    `selectAllStatus=${this.selectAllStatus}`
+                ).then(result => {
+                    console.log(result.data)
+                    if (result.data.code === 200) {
+                        this.getShoppingCartList();
+                    }
+                });
+            }
+        },
+        mounted: function () {
+            this.getShoppingCartList();
+        }
+    });
 </script>
