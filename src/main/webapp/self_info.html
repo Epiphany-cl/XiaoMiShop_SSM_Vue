@@ -167,7 +167,7 @@
     new Vue({
         el: "#personalInformation",
         data: {
-            userinfo:'',
+            userinfo: '',
             profileData: [
                 {label: '账号', value: headerVm.userinfo.userName, editMode: false},
                 {label: '手机号', value: headerVm.userinfo.userPhone, editMode: false},
@@ -185,24 +185,44 @@
                 axios.post(
                     'user/updateUserInfo',
                     this.userInfoData
-                ).then(result =>{
+                ).then(result => {
                     console.log(result.data)
                     headerVm.userinfo = result.data.obj;
                 });
+            },
+            getUserInfo() {
+                axios.post(
+                    'user/getUserInfo'
+                ).then(result => {
+                    console.log(result.data)
+                    if (result.data.code === 200) {
+                        let user = result.data.obj;
+                        this.profileData[0].value = user.userName;
+                        this.profileData[1].value = user.userPhone;
+                        this.profileData[2].value = user.userPassword;
+                        this.profileData[3].value = user.userSignature;
+                        this.profileData[4].value = user.userHobby;
+                        this.profileData[5].value = user.userAddress;
+                    }
+                });
             }
+
         },
         computed: {
             userInfoData: function () {
                 return {
                     "userId": headerVm.userinfo.userId,
-                    "userPhone": this.profileData[1].value,
-                    "userAddress": this.profileData[5].value,
-                    "userHobby": this.profileData[4].value,
                     "userName": this.profileData[0].value,
+                    "userPhone": this.profileData[1].value,
                     "userPassword": this.profileData[2].value,
-                    "userSignature": this.profileData[3].value
+                    "userSignature": this.profileData[3].value,
+                    "userHobby": this.profileData[4].value,
+                    "userAddress": this.profileData[5].value
                 };
             }
+        },
+        mounted:function (){
+            this.getUserInfo();
         }
     });
 </script>
