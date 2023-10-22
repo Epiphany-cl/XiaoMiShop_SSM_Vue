@@ -1,9 +1,7 @@
 package com.cl.service.iml;
 
 import com.cl.mapper.*;
-import com.cl.pojo.Order;
-import com.cl.pojo.OrderExample;
-import com.cl.pojo.Product;
+import com.cl.pojo.*;
 import com.cl.service.OrderService;
 import com.cl.vo.OrderVO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +21,7 @@ public class OrderServiceImpl implements OrderService {
     private OrderMapper orderMapper;
 
     @Autowired
-    private ShoppingCartMapper  shoppingCartMapper;
+    private ShoppingCartMapper shoppingCartMapper;
 
     @Autowired
     private ProductMapper productMapper;
@@ -67,7 +65,7 @@ public class OrderServiceImpl implements OrderService {
         OrderExample orderExample = new OrderExample();
         OrderExample.Criteria criteria = orderExample.createCriteria();
 
-        if (userId  != 0) {
+        if (userId != 0) {
             criteria.andUserIdEqualTo(userId);
         }
         orderExample.setOrderByClause("order_create_time desc");
@@ -101,11 +99,28 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public boolean shoppingCartBilling(Integer userId) {
-        //先获根据id获取购物车列表
+        //先获根据uid获取购物车列表
 
+        ShoppingCartExample shoppingCartExample = new ShoppingCartExample();
+        shoppingCartExample.createCriteria().andUserIdEqualTo(userId);
+        List<ShoppingCart> shoppingCarts = shoppingCartMapper.selectByExample(shoppingCartExample);
 
+        //根据购物车列表 商品的状态和数量生成订单
+        for (ShoppingCart shoppingCart : shoppingCarts) {
+            Integer cartStatus = shoppingCart.getCartStatus(); //0就是未选择
+            if (cartStatus > 0 && shoppingCart.getProductQuantity() > 0) {
+                //数量多少就生成多少订单
+                for (int i = 0; i < shoppingCart.getProductQuantity(); i++) {
+                    //生成订单
+                    createOneOrder(userId, shoppingCart.getProductId(), shoppingCart.getProductConfigId(), shoppingCart.getProductColorId());
+                }
+                //删除除购物车中已经生成订单的商品
+                shoppingCartMapper.deleteByPrimaryKey(shoppingCart.getCartId());
+            }
+        }
 
-        return false;
+        //懒得写判断了
+        return true;
     }
 
     //订单号生成

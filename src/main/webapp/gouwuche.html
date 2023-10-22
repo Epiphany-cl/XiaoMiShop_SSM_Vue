@@ -139,7 +139,10 @@
                 axios.post(
                     'order/shoppingCartBilling'
                 ).then(result =>{
-                    console.log(result.data)
+                    console.log(result.data);
+                    if (result.data.code === 200){
+                        this.getShoppingCartList();
+                    }
                 });
             }
         },
