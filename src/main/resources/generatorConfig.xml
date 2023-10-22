@@ -98,7 +98,8 @@
         <!--<table tableName="t_product_color" domainObjectName="ProductColor"/>-->
         <!--<table tableName="t_product_config" domainObjectName="ProductConfig"/>-->
         <!--<table tableName="t_product_category" domainObjectName="ProductCategory"/>-->
-        <table tableName="t_shopping_cart" domainObjectName="ShoppingCart"/>
+        <!--<table tableName="t_shopping_cart" domainObjectName="ShoppingCart"/>-->
+        <table tableName="t_order" domainObjectName="Order"/>
 
     </context>
 </generatorConfiguration>

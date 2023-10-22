@@ -88,7 +88,6 @@ public class ShoppingCartController {
         return new ResultVO<>(200, "全选/全不选 成功！");
     }
 
-
     @RequestMapping("/deleteShoppingCartByCartId")
     public ResultVO<Object> deleteShoppingCartByCartId(Integer cartId) {
         boolean b = shoppingCartService.deleteShoppingCartByCartId(cartId);
@@ -97,6 +96,20 @@ public class ShoppingCartController {
         }
         return new ResultVO<>(200, "删除成功");
     }
+
+    @RequestMapping("/updateQuantityByCartId")
+    public ResultVO<Object> updateQuantityByCartId(Integer cartId, Integer productQuantity) {
+        boolean b = shoppingCartService.updateQuantityByCartId(cartId, productQuantity);
+
+        if (!b) {
+            return new ResultVO<>(444, "修改失败");
+        }
+
+        return new ResultVO<>(200, "修改成功");
+    }
+
+
+
 }
 
 

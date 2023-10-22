@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpSession;
 
+import java.util.Objects;
+
 import static com.google.code.kaptcha.Constants.KAPTCHA_SESSION_KEY;
 
 @RestController
@@ -74,5 +76,24 @@ public class UserController {
     public ResultVO<Object> logout(HttpSession session) {
         session.removeAttribute("user");
         return new ResultVO<>(200, "退出成功");
+    }
+
+    @RequestMapping("/updateUserInfo")
+    public ResultVO<User> updateUserInfo(HttpSession session, @RequestBody User user) {
+        // 获取session中的用户信息 与 要更新的用户信息进行比较
+        User sessionUser = (User) session.getAttribute("user");
+        if (!Objects.equals(sessionUser.getUserId(), user.getUserId())) {
+            return new ResultVO<>(400, "用户信息不匹配");
+        }
+
+        //更新信息
+        User newUserInfo = userService.updateUserInfo(user);
+
+        //修改session域的user
+        session.setAttribute("user", newUserInfo);
+
+        ResultVO<User> userResultVO = new ResultVO<>(200, "用户信息更新成功");
+        userResultVO.setObj(newUserInfo);
+        return userResultVO;
     }
 }

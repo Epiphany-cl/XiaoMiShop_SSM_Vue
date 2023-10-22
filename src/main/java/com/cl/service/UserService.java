@@ -10,4 +10,6 @@ public interface UserService {
     boolean login(User user);
 
     User getUserByUserName(String userName);
+
+    User updateUserInfo(User user);
 }

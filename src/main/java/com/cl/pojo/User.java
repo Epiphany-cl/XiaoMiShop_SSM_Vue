@@ -70,4 +70,17 @@ public class User {
     public void setUserAddress(String userAddress) {
         this.userAddress = userAddress == null ? null : userAddress.trim();
     }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "userId=" + userId +
+                ", userName='" + userName + '\'' +
+                ", userPhone='" + userPhone + '\'' +
+                ", userPassword='" + userPassword + '\'' +
+                ", userSignature='" + userSignature + '\'' +
+                ", userHobby='" + userHobby + '\'' +
+                ", userAddress='" + userAddress + '\'' +
+                '}';
+    }
 }

@@ -40,6 +40,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         if (userId != null && userId != 0) {
             shoppingCartExample.createCriteria().andUserIdEqualTo(userId);
         }
+        shoppingCartExample.setOrderByClause("cart_id desc");
         List<ShoppingCart> shoppingCartList = shoppingCartMapper.selectByExample(shoppingCartExample);
 
         List<ShoppingCartVO> shoppingCartVOS = new ArrayList<>();
@@ -83,7 +84,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
         if (cartStatus == 0) {
             cartStatus = 1;
-        }else {
+        } else {
             cartStatus = 0;
         }
 
@@ -112,6 +113,17 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         int i = shoppingCartMapper.deleteByPrimaryKey(cartId);
         return i > 0;
     }
+
+    @Override
+    public boolean updateQuantityByCartId(Integer cartId, Integer productQuantity) {
+        ShoppingCart shoppingCart = new ShoppingCart();
+        shoppingCart.setProductQuantity(productQuantity);
+        shoppingCart.setCartId(cartId);
+
+        int i = shoppingCartMapper.updateByPrimaryKeySelective(shoppingCart);
+        return i > 0;
+    }
+
 
 
 }

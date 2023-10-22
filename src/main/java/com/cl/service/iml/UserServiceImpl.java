@@ -57,4 +57,15 @@ public class UserServiceImpl implements UserService {
         List<User> users = userMapper.selectByExample(userExample);
         return users.get(0);
     }
+
+    @Override
+    public User updateUserInfo(User user) {
+        int i = userMapper.updateByPrimaryKeySelective(user);
+
+        if (i > 0) {
+            return userMapper.selectByPrimaryKey(user.getUserId());
+        }
+
+        return null;
+    }
 }

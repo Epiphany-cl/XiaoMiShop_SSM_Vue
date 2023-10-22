@@ -260,7 +260,17 @@
             },
             // 立即购买
             buyProduct() {
-
+                if (headerVm.userinfo) {
+                    axios.post(
+                        'order/createOrderOnProduct',
+                        `productId=${this.productId}&productConfigId=${this.productConfig[this.selectedConfigIndex].productConfigId}&productColorId=${this.productColor[this.selectedColorIndex].productColorId}`
+                    ).then(result => {
+                        console.log(result.data)
+                        window.location.href = "dingdanzhongxin.html";
+                    });
+                }else {
+                    window.location.href = "login.html";
+                }
             },
             // 加入购物车
             addShoppingCart() {
@@ -275,6 +285,8 @@
                             alert("添加失败")
                         }
                     });
+                }else {
+                    window.location.href = "login.html";
                 }
             },
             //初始化

@@ -31,7 +31,15 @@
 - [x] 购物车显示
 - [x] 购物车总价计算
 - [x] 商品的删除
+- [x] 详细页面 立即购买
+  - 订单表 t_order(id、userId、productId、productConfigId、productColorId、createDatetime、priceTotal、status：0:未支付 1:已支付 2:已发放 3:已签收 4:已确认发货)
+- [x] 订单页展示
 
+### 2023年10月22日
+
+- [x] 个人信息页面
+- [x] 购物车商品加减
+- [x] 购物车界面的去结算
 
 产品展示时原理
 ```html
