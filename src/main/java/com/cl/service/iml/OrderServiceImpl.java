@@ -118,7 +118,6 @@ public class OrderServiceImpl implements OrderService {
                 shoppingCartMapper.deleteByPrimaryKey(shoppingCart.getCartId());
             }
         }
-
         //懒得写判断了
         return true;
     }

@@ -41,4 +41,10 @@ public class ProductController {
     public ResultVO<ProductColor> getProductColor(int productId) {
         return new ResultVO<>(productService.getProductColor(productId));
     }
+
+    @RequestMapping("/getCategoryNameById")
+    public ResultVO<String> getCategoryNameById(int categoryId){
+        return new ResultVO<>(productService.getCategoryNameByid(categoryId));
+    }
+
 }

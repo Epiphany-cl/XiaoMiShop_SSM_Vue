@@ -1,8 +1,6 @@
 package com.cl.service.iml;
 
-import com.cl.mapper.ProductColorMapper;
-import com.cl.mapper.ProductConfigMapper;
-import com.cl.mapper.ProductMapper;
+import com.cl.mapper.*;
 import com.cl.pojo.*;
 import com.cl.service.ProductService;
 import com.cl.vo.ResultVO;
@@ -19,6 +17,9 @@ public class ProductServiceImpl implements ProductService {
 
     @Autowired
     private ProductMapper productMapper;
+
+    @Autowired
+    private ProductCategoryMapper  productCategoryMapper;
 
     @Autowired
     private ProductConfigMapper productConfigMapper;
@@ -61,5 +62,10 @@ public class ProductServiceImpl implements ProductService {
             criteria.andProductIdEqualTo(productId);
         }
         return productColorMapper.selectByExample(productColorExample);
+    }
+
+    @Override
+    public String getCategoryNameByid(int categoryId) {
+        return productCategoryMapper.selectByPrimaryKey(categoryId).getCategoryName();
     }
 }

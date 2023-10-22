@@ -16,15 +16,19 @@
             width: 40px;
             height: 40px;
             margin: 0 auto;
-            border: 4px solid rgba(255,255,255,0.3);
+            border: 4px solid rgba(255, 255, 255, 0.3);
             border-radius: 50%;
             border-top: 4px solid #000;
             animation: spin 1s linear infinite;
         }
 
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
         }
     </style>
 </head>
@@ -34,7 +38,7 @@
     <div class="top center" id="header">
         <div class="left fl">
             <ul>
-                <li><a href="https://www.mi.com/shop" >小米商城</a></li>
+                <li><a href="https://www.mi.com/shop">小米商城</a></li>
                 <li><a href="https://home.miui.com/">MIUI</a></li>
                 <li><a href="//iot.mi.com">IoT</a></li>
                 <li><a href="//i.mi.com/">云服务</a></li>
@@ -47,7 +51,7 @@
             </ul>
         </div>
         <div class="right fr">
-            <div class="gouwuche fr"><a href="">购物车</a></div>
+            <div class="gouwuche fr"><a href="gouwuche.html">购物车</a></div>
             <div class="fr">
                 <ul v-if="!userinfo">
                     <li><a href="./login.html">登录</a></li>
@@ -106,7 +110,7 @@
 
 <!-- start banner_x -->
 <div class="banner_x center">
-    <a href="./index.html" >
+    <a href="./index.html">
         <div class="logo fl"></div>
     </a>
     <a href="">
@@ -114,15 +118,17 @@
     </a>
     <div class="nav fl">
         <ul>
-            <li><a href="">小米手机</a></li>
-            <li><a href="">红米</a></li>
-            <li><a href="">平板·笔记本</a></li>
-            <li><a href="">电视</a></li>
-            <li><a href="">盒子·影音</a></li>
-            <li><a href="">路由器</a></li>
-            <li><a href="">智能硬件</a></li>
-            <li><a href="">服务</a></li>
-            <li><a href="">社区</a></li>
+            <ul>
+                <li><a href="./liebiao.html?categoryId=1">小米手机</a></li>
+                <li><a href="./liebiao.html?categoryId=2">红米</a></li>
+                <li><a href="./liebiao.html?categoryId=3">平板·笔记本</a></li>
+                <li><a href="./liebiao.html?categoryId=4">电视</a></li>
+                <li><a href="./liebiao.html?categoryId=5">盒子·影音</a></li>
+                <li><a href="./liebiao.html?categoryId=5">路由器</a></li>
+                <li><a href="./liebiao.html?categoryId=6">智能硬件</a></li>
+                <li><a href="https://www.mi.com/service">服务</a></li>
+                <li><a href="https://www.xiaomi.cn/">社区</a></li>
+            </ul>
         </ul>
     </div>
     <div class="search fr">
@@ -145,7 +151,7 @@
 
 <!-- start danpin -->
 <div class="danpin center" id="products">
-    <div class="biaoti center">小米手机</div>
+    <div class="biaoti center">{{categoryName}}</div>
     <div v-for="(chunk,index) in chunkedArr" :ked="index">
         <div class="main center">
             <div v-for="item in chunk" :key="item.productId"
@@ -154,12 +160,12 @@
                  onmouseout="this.style.border='2px solid #fff'"
                  onmousemove="this.style.border='2px solid red'">
                 <div class="sub_mingxing">
-                    <a :href="'./xiangqing.html?productId=' + item.productId" >
+                    <a :href="'./xiangqing.html?productId=' + item.productId">
                         <img :src="item.productImgPath" alt="">
                     </a>
                 </div>
                 <div class="pinpai">
-                    <a :href="'./xiangqing.html?productId=' + item.productId" >{{item.productName}}</a>
+                    <a :href="'./xiangqing.html?productId=' + item.productId">{{item.productName}}</a>
                 </div>
                 <div class="youhui">{{item.productSketch}}</div>
                 <div class="jiage">{{item.productStratingPrice}}元</div>
@@ -193,11 +199,12 @@
         data: {
             //类型
             categoryId: 0,
+            categoryName: '',
             pageNum: 1,
             productList: [],
-            pageTotal:0,
+            pageTotal: 0,
             //加载动画
-            isLoading:false
+            isLoading: false
         },
         methods: {
             getProductList() {
@@ -213,21 +220,27 @@
                     this.isLoading = false;  // 隐藏加载动画
                 });
             },
-
-
             //滚动到最低端触发
             handleScroll() {
                 // 检查是否滚动到页面底部
                 if ((window.innerHeight + window.scrollY) + 5 >= document.body.offsetHeight) {
                     console.log(window.innerHeight + window.scrollY + "|" + document.body.offsetHeight)
                     //判断是否加载完全
-                    if (this.productList.length !== this.pageTotal ){
+                    if (this.productList.length !== this.pageTotal) {
                         this.isLoading = true;  // 显示加载动画
                         this.pageNum = this.pageNum + 1;
-                        setTimeout(() => this.getProductList(),500);
+                        setTimeout(() => this.getProductList(), 500);
                     }
 
                 }
+            },
+            getCategoryName() {
+                axios.post(
+                    'product/getCategoryNameById',
+                    'categoryId=' + new URLSearchParams(window.location.search).get("categoryId")
+                ).then(result => {
+                    this.categoryName = result.data.obj;
+                });
             },
             //节流 为了避免多次触发scroll事件
             throttle(func, delay) {
@@ -256,6 +269,7 @@
         mounted: function () {
             //初始化页面
             this.getProductList();
+            this.getCategoryName();
 
             // 为window添加scroll事件监听器
             window.addEventListener('scroll', this.handleScroll); // 200ms为延迟时间

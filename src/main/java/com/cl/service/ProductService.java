@@ -16,4 +16,6 @@ public interface ProductService {
     List<ProductConfig> getProductConfig(int productId);
 
     List<ProductColor> getProductColor(int productId);
+
+    String getCategoryNameByid(int categoryId);
 }
