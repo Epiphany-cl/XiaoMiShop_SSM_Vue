@@ -18,4 +18,8 @@ public interface ProductService {
     List<ProductColor> getProductColor(int productId);
 
     String getCategoryNameByid(int categoryId);
+
+    PageInfo<Product> getPageInfo(int pageNum, int pageSize);
+
+    boolean updateProduct(Product product);
 }

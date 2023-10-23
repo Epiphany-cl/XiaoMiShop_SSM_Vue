@@ -112,7 +112,11 @@ public class OrderServiceImpl implements OrderService {
                 //数量多少就生成多少订单
                 for (int i = 0; i < shoppingCart.getProductQuantity(); i++) {
                     //生成订单
-                    createOneOrder(userId, shoppingCart.getProductId(), shoppingCart.getProductConfigId(), shoppingCart.getProductColorId());
+                    createOneOrder(
+                            userId,
+                            shoppingCart.getProductId(),
+                            shoppingCart.getProductConfigId(),
+                            shoppingCart.getProductColorId());
                 }
                 //删除除购物车中已经生成订单的商品
                 shoppingCartMapper.deleteByPrimaryKey(shoppingCart.getCartId());

@@ -68,4 +68,17 @@ public class ProductServiceImpl implements ProductService {
     public String getCategoryNameByid(int categoryId) {
         return productCategoryMapper.selectByPrimaryKey(categoryId).getCategoryName();
     }
+
+    @Override
+    public PageInfo<Product> getPageInfo(int pageNum, int pageSize) {
+        ProductExample productExample = new ProductExample();
+        productExample.setOrderByClause("product_id desc");
+
+        return PageHelper.startPage(pageNum, pageSize).doSelectPageInfo(() -> productMapper.selectByExample(productExample));
+    }
+
+    @Override
+    public boolean updateProduct(Product product) {
+        return productMapper.updateByPrimaryKeySelective(product) > 0;
+    }
 }

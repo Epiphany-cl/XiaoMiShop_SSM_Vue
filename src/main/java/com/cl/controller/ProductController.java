@@ -8,6 +8,7 @@ import com.cl.vo.ResultVO;
 import com.github.pagehelper.PageInfo;
 import com.mysql.jdbc.log.Log;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -43,8 +44,28 @@ public class ProductController {
     }
 
     @RequestMapping("/getCategoryNameById")
-    public ResultVO<String> getCategoryNameById(int categoryId){
+    public ResultVO<String> getCategoryNameById(int categoryId) {
         return new ResultVO<>(productService.getCategoryNameByid(categoryId));
     }
 
+    @RequestMapping("/getProductPageInfo")
+    public ResultVO<Product> getProductPageInfo(int pageNum,
+                                                int pageSize) {
+
+        PageInfo<Product> productPageInfo = productService.getPageInfo(pageNum, pageSize);
+
+        return new ResultVO<>(productPageInfo);
+    }
+
+    @RequestMapping("/update")
+    public ResultVO<Product> updateProduct(@RequestBody Product product) {
+        boolean b = productService.updateProduct(product);
+
+        if (!b) {
+            return new ResultVO<>(500, "更新失败");
+        }
+
+        System.out.println("product = " + product);
+        return new ResultVO<>();
+    }
 }

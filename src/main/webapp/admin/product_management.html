@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>后台管理</title>
+    <!-- import CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <!-- import Vue before Element -->
+    <script src="https://unpkg.com/vue@2/dist/vue.js"></script>
+    <!-- import JavaScript -->
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <!-- axios -->
+    <script src="../js/axios.min.js"></script>
+    <style>
+        .el-header {
+            background-color: #409EFF;
+            color: #FFFFFF;
+            text-align: center;
+            line-height: 60px;
+        }
+
+        .el-aside, .el-menu {
+            background-color: #ecf5ff;
+            color: #333;
+            text-align: center;
+            line-height: 200px;
+        }
+
+        .el-main {
+            background-color: #FFFFFF;
+            color: #333;
+            text-align: center;
+            line-height: 160px;
+        }
+
+        .el-table .cell {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f7fa;
+        }
+
+        .el-header {
+            background-color: #409EFF;
+            color: #FFFFFF;
+            text-align: center;
+            line-height: 60px;
+            box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+        }
+
+        .el-aside, .el-menu {
+            background-color: #ecf5ff;
+            color: #333;
+            border-right: 1px solid #d1dbe5;
+        }
+
+        .el-menu-item {
+            text-align: left;
+            padding-left: 20px;
+        }
+
+        .el-menu-item:hover {
+            background-color: #dce9f9;
+        }
+
+        .el-main {
+            background-color: #FFFFFF;
+            color: #333;
+            padding: 20px;
+            box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+        }
+
+        .el-table .cell {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .el-dialog {
+            top: 20vh;
+        }
+
+        .dialog-footer {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .el-button {
+            margin-left: 10px;
+        }
+
+
+    </style>
+</head>
+<body>
+<el-container id="app">
+    <el-header style="font-size: 30px">一个普普通通的后台管理</el-header>
+    <el-container>
+        <el-aside width="200px">
+            <el-menu>
+                <el-menu-item index="1">商品管理</el-menu-item>
+                <el-menu-item index="2">订单管理</el-menu-item>
+                <el-menu-item index="3">用户管理</el-menu-item>
+            </el-menu>
+        </el-aside>
+        <el-main>
+            <el-table
+                    :data="tableData"
+                    style="width: 100%">
+                <el-table-column
+                        prop="productId"
+                        label="id"
+                        width="60">
+                </el-table-column>
+                <el-table-column
+                        prop="productName"
+                        label="商品名称"
+                        width="150">
+                </el-table-column>
+                <el-table-column
+                        prop="productSketch"
+                        label="简述"
+                        width="200">
+                </el-table-column>
+                <el-table-column
+                        prop="productDescription"
+                        label="描述"
+                        width="250">
+                </el-table-column>
+                <el-table-column
+                        prop="productStratingPrice"
+                        label="起售价"
+                        width="100">
+                </el-table-column>
+                <el-table-column
+                        prop="productImgPath"
+                        label="图片路径"
+                        width="200">
+                </el-table-column>
+                <el-table-column
+                        prop="productCategoryId"
+                        label="分类id"
+                        width="100">
+                </el-table-column>
+                <el-table-column
+                        fixed="right"
+                        label="操作"
+                        width="100">
+                    <template slot-scope="scope">
+                        <el-button @click="editProduct(scope.row.productId)" size="mini">编辑</el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+            <el-pagination
+                    background
+                    layout="prev, pager, next, jumper, total"
+                    :current-page.sync="pageNum"
+                    :page-size="pageSize"
+                    :total="totalItems"
+                    @current-change="handlePageChange">
+            </el-pagination>
+
+            <el-dialog title="编辑商品" :visible.sync="isDialogVisible" width="50%">
+                <el-form :model="currentProduct">
+                    <el-form-item v-show="false" label="id">
+                        <el-input v-model="currentProduct.productId"></el-input>
+                    </el-form-item>
+                    <el-form-item label="商品名称">
+                        <el-input v-model="currentProduct.productName"></el-input>
+                    </el-form-item>
+                    <el-form-item label="简述">
+                        <el-input v-model="currentProduct.productSketch"></el-input>
+                    </el-form-item>
+                    <el-form-item label="详细描述">
+                        <el-input v-model="currentProduct.productDescription"></el-input>
+                    </el-form-item>
+                    <el-form-item label="起售价">
+                        <el-input v-model="currentProduct.productStratingPrice"></el-input>
+                    </el-form-item>
+                    <el-form-item label="商品图片地址">
+                        <el-input v-model="currentProduct.productImgPath"></el-input>
+                    </el-form-item>
+                    <el-form-item label="类别id">
+                        <el-input v-model="currentProduct.productCategoryId"></el-input>
+                    </el-form-item>
+                </el-form>
+                <span slot="footer" class="dialog-footer">
+        <el-button @click="isDialogVisible = false">取消</el-button>
+        <el-button type="primary" @click="saveProduct">保存</el-button>
+    </span>
+            </el-dialog>
+
+        </el-main>
+    </el-container>
+</el-container>
+</body>
+</html>
+
+<script>
+    new Vue({
+        el: "#app",
+        data: {
+            tableData: [],
+            pageNum: 1,
+            pageSize: 5,
+            totalItems: 0,// 新增属性，表示总的项目数
+            isDialogVisible: false, // 控制模态框的显示和隐藏
+            currentProduct: {} // 当前正在编辑的商品
+        },
+        methods: {
+            getProductList() {
+                axios.post(
+                    "/XiaoMiShop_SSM_Vue/product/getProductPageInfo",
+                    `pageNum=${this.pageNum}&pageSize=${this.pageSize}`
+                ).then(result => {
+                    this.tableData = result.data.pageInfo.list;
+                    this.totalItems = result.data.pageInfo.total; // 更新总的项目数
+                    console.log(this.tableData[0])
+                });
+            },
+            editProduct(productId) {
+                const product = this.tableData.find(p => p.productId === productId);
+                this.currentProduct = {...product}; // 使用对象展开来复制商品数据
+                this.isDialogVisible = true;
+            },
+            handlePageChange(newPage) {
+                this.pageNum = newPage;
+                this.getProductList(); // 重新获取数据
+            },
+            saveProduct() {
+                axios.post(
+                    '/XiaoMiShop_SSM_Vue/product/update',
+                    this.currentProduct
+                ).then(resutl =>{
+                    console.log(resutl.data)
+                    if(resutl.data.code === 200){
+                        this.getProductList();
+                    }
+                });
+                this.isDialogVisible = false;
+            },
+        },
+        mounted: function () {
+            this.getProductList();
+        }
+    });
+</script>

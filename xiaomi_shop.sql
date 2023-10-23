@@ -1,158 +1,3 @@
-### 小米商城(SSM + ~~Thymeleaf~~ + vue.js)
-
----
-
-### 2023年10月18日 
-
-- [x] 项目的准备工作(配置文件)
-- [x] 整体网页的分析
-- [x] 注册
-  - user表(id、用户名、手机号、密码、个性签名、爱好、收货地址)
-
-### 2023年10月19日
-
-- [x] 登录
-- [x] 商品展示
-  - 产品表 (ProductId、商品名、简单描述、详细描述、起售价、图片、商品类别、创建时间、修改时间)
-  - 产品配置表(ProductConfigId、ProductId、Config、价格) 一对多
-  - 产品颜色表(ProductColorId、ProductId、Color)
-  - 产品分类表
-
-### 2023年10月20日
-
-- [x] 商品详情展示
-- [x] 用户登录状态显示
-- [x] 购物车
-  - 购物车表 ShoppingCart (id、uid、productid、quantity数量、选中状态)
-- [x] 商品页添加购物车
-
-### 2023年10月21日
-
-- [x] 购物车显示
-- [x] 购物车总价计算
-- [x] 商品的删除
-- [x] 详细页面 立即购买
-  - 订单表 t_order(id、userId、productId、productConfigId、productColorId、createDatetime、priceTotal、status：0:未支付 1:已支付 2:已发放 3:已签收 4:已确认发货)
-- [x] 订单页展示
-
-### 2023年10月22日
-
-- [x] 个人信息页面
-- [x] 购物车商品加减
-- [x] 购物车界面的去结算
-
-
-### 2023年10月23日
-
-- [x] ElementUI启动
-- [x] [一普普通通的后台管理](http://localhost:8080/XiaoMiShop_SSM_Vue/admin/product_management.html)
-
-产品展示时原理
-```html
-<template>
-  <div>
-    <!-- 遍历 chunkedArr -->
-    <div v-for="(chunk, index) in chunkedArr" :key="index">
-      <!-- 遍历每个子数组 -->
-      <div v-for="item in chunk" :key="item">
-        {{ item }}
-      </div>
-      -----
-    </div>
-  </div>
-</template>
-
-<script>
-export default {
-  data() {
-    return {
-      arr: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-    };
-  },
-  computed: {
-    // 将 arr 分割成大小为 5 的子数组
-    chunkedArr() {
-      let result = [];
-      for (let i = 0; i < this.arr.length; i += 5) {
-        result.push(this.arr.slice(i, i + 5));
-      }
-      return result;
-    }
-  }
-};
-</script>
-```
-
----
-
-1. **用户表 (User)**
-  - UserID (主键)
-  - Username
-  - Password
-  - Email
-  - PhoneNumber
-  - Address
-  - ... (其他个人信息)
-
-2. **产品类别表 (ProductCategory)**
-  - CategoryID (主键)
-  - CategoryName
-
-3. **产品表 (Product)**
-  - ProductID (主键)
-  - ProductName
-  - Description
-  - Price
-  - ImageURL
-  - CategoryID (外键，引用 ProductCategory 的 CategoryID)
-  - StockQuantity (库存数量)
-  - ... (其他产品相关信息)
-
-4. **订单表 (Order)**
-  - OrderID (主键)
-  - UserID (外键，引用 User 的 UserID)
-  - OrderDate
-  - TotalAmount
-  - OrderStatus
-  - ... (其他订单相关信息)
-
-5. **订单详细信息表 (OrderDetail)**
-  - DetailID (主键)
-  - OrderID (外键，引用 Order 的 OrderID)
-  - ProductID (外键，引用 Product 的 ProductID)
-  - Quantity
-  - Subtotal
-
-6. **购物车表 (ShoppingCart)**
-  - CartID (主键)
-  - UserID (外键，引用 User 的 UserID)
-  - ProductID (外键，引用 Product 的 ProductID)
-  - Quantity
-
-7. **用户反馈表 (UserFeedback)**
-  - FeedbackID (主键)
-  - UserID (外键，引用 User 的 UserID)
-  - FeedbackContent
-  - FeedbackDate
-
-8. **用户收藏表 (UserFavorites)**
-  - FavoriteID (主键)
-  - UserID (外键，引用 User 的 UserID)
-  - ProductID (外键，引用 Product 的 ProductID)
-
-9. **产品评论表 (ProductReviews)**
-  - ReviewID (主键)
-  - ProductID (外键，引用 Product 的 ProductID)
-  - UserID (外键，引用 User 的 UserID)
-  - ReviewContent
-  - ReviewDate
-  - Rating
-
----
-
-数据库表结构与数据：
-
-```mysql
 /*
  Navicat Premium Data Transfer
 
@@ -177,15 +22,15 @@ SET FOREIGN_KEY_CHECKS = 0;
 -- ----------------------------
 DROP TABLE IF EXISTS `t_order`;
 CREATE TABLE `t_order`  (
-                          `order_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-                          `user_id` int(11) NULL DEFAULT NULL,
-                          `product_id` int(11) NULL DEFAULT NULL,
-                          `product_config_id` int(11) NULL DEFAULT NULL,
-                          `product_color_id` int(11) NULL DEFAULT NULL,
-                          `total_price` decimal(10, 2) NULL DEFAULT NULL,
-                          `order_create_time` datetime NULL DEFAULT NULL,
-                          `order_status` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-                          PRIMARY KEY (`order_id`) USING BTREE
+  `order_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `user_id` int(11) NULL DEFAULT NULL,
+  `product_id` int(11) NULL DEFAULT NULL,
+  `product_config_id` int(11) NULL DEFAULT NULL,
+  `product_color_id` int(11) NULL DEFAULT NULL,
+  `total_price` decimal(10, 2) NULL DEFAULT NULL,
+  `order_create_time` datetime NULL DEFAULT NULL,
+  `order_status` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  PRIMARY KEY (`order_id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -212,16 +57,16 @@ INSERT INTO `t_order` VALUES ('2310221655148007', 3, 1, 1, 1, 2499.00, '2023-10-
 -- ----------------------------
 DROP TABLE IF EXISTS `t_product`;
 CREATE TABLE `t_product`  (
-                            `product_id` int(11) NOT NULL AUTO_INCREMENT,
-                            `product_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-                            `product_sketch` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '商品简述 外面展示用的',
-                            `product_description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-                            `product_strating_price` decimal(10, 2) NULL DEFAULT NULL COMMENT '起售价格',
-                            `product_img_path` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-                            `product_category_id` int(11) NULL DEFAULT NULL COMMENT '商品种类',
-                            `product_creation_time` datetime NULL DEFAULT NULL,
-                            `product_update_time` datetime NULL DEFAULT NULL,
-                            PRIMARY KEY (`product_id`) USING BTREE
+  `product_id` int(11) NOT NULL AUTO_INCREMENT,
+  `product_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `product_sketch` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '商品简述 外面展示用的',
+  `product_description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `product_strating_price` decimal(10, 2) NULL DEFAULT NULL COMMENT '起售价格',
+  `product_img_path` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `product_category_id` int(11) NULL DEFAULT NULL COMMENT '商品种类',
+  `product_creation_time` datetime NULL DEFAULT NULL,
+  `product_update_time` datetime NULL DEFAULT NULL,
+  PRIMARY KEY (`product_id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 51 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -282,9 +127,9 @@ INSERT INTO `t_product` VALUES (49, '小米6', '5.16早10点开售', '变焦双�
 -- ----------------------------
 DROP TABLE IF EXISTS `t_product_category`;
 CREATE TABLE `t_product_category`  (
-                                     `category_id` int(11) NOT NULL,
-                                     `category_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-                                     PRIMARY KEY (`category_id`) USING BTREE
+  `category_id` int(11) NOT NULL,
+  `category_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  PRIMARY KEY (`category_id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -302,11 +147,11 @@ INSERT INTO `t_product_category` VALUES (6, '路由器');
 -- ----------------------------
 DROP TABLE IF EXISTS `t_product_color`;
 CREATE TABLE `t_product_color`  (
-                                  `product_color_id` int(11) NOT NULL AUTO_INCREMENT,
-                                  `product_id` int(11) NULL DEFAULT NULL,
-                                  `product_color` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-                                  `color_code` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-                                  PRIMARY KEY (`product_color_id`) USING BTREE
+  `product_color_id` int(11) NOT NULL AUTO_INCREMENT,
+  `product_id` int(11) NULL DEFAULT NULL,
+  `product_color` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `color_code` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  PRIMARY KEY (`product_color_id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -320,11 +165,11 @@ INSERT INTO `t_product_color` VALUES (2, 1, '汝窑白', '#fff');
 -- ----------------------------
 DROP TABLE IF EXISTS `t_product_config`;
 CREATE TABLE `t_product_config`  (
-                                   `product_config_id` int(11) NOT NULL AUTO_INCREMENT,
-                                   `product_id` int(11) NULL DEFAULT NULL,
-                                   `product_config` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-                                   `product_price` decimal(10, 2) NULL DEFAULT NULL,
-                                   PRIMARY KEY (`product_config_id`) USING BTREE
+  `product_config_id` int(11) NOT NULL AUTO_INCREMENT,
+  `product_id` int(11) NULL DEFAULT NULL,
+  `product_config` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `product_price` decimal(10, 2) NULL DEFAULT NULL,
+  PRIMARY KEY (`product_config_id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -338,14 +183,14 @@ INSERT INTO `t_product_config` VALUES (2, 1, '6GB+128GB', 2899.00);
 -- ----------------------------
 DROP TABLE IF EXISTS `t_shopping_cart`;
 CREATE TABLE `t_shopping_cart`  (
-                                  `cart_id` int(11) NOT NULL AUTO_INCREMENT,
-                                  `user_id` int(11) NULL DEFAULT NULL,
-                                  `product_id` int(11) NULL DEFAULT NULL,
-                                  `product_config_id` int(11) NULL DEFAULT NULL,
-                                  `product_color_id` int(11) NULL DEFAULT NULL,
-                                  `product_quantity` int(11) NULL DEFAULT NULL COMMENT '数量',
-                                  `cart_status` int(11) NULL DEFAULT NULL COMMENT '0:未选择 1:选择',
-                                  PRIMARY KEY (`cart_id`) USING BTREE
+  `cart_id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NULL DEFAULT NULL,
+  `product_id` int(11) NULL DEFAULT NULL,
+  `product_config_id` int(11) NULL DEFAULT NULL,
+  `product_color_id` int(11) NULL DEFAULT NULL,
+  `product_quantity` int(11) NULL DEFAULT NULL COMMENT '数量',
+  `cart_status` int(11) NULL DEFAULT NULL COMMENT '0:未选择 1:选择',
+  PRIMARY KEY (`cart_id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 24 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -361,14 +206,14 @@ INSERT INTO `t_shopping_cart` VALUES (23, 3, 1, 1, 1, 1, 1);
 -- ----------------------------
 DROP TABLE IF EXISTS `t_user`;
 CREATE TABLE `t_user`  (
-                         `user_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-                         `user_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-                         `user_phone` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-                         `user_password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-                         `user_signature` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '个性签名',
-                         `user_hobby` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-                         `user_address` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-                         PRIMARY KEY (`user_id`) USING BTREE
+  `user_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `user_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `user_phone` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `user_password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `user_signature` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '个性签名',
+  `user_hobby` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `user_address` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  PRIMARY KEY (`user_id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 9 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -384,4 +229,3 @@ INSERT INTO `t_user` VALUES (7, '1111111', '11111111111', '1111', NULL, NULL, NU
 INSERT INTO `t_user` VALUES (8, '2222', '11111111111', '2222', NULL, NULL, NULL);
 
 SET FOREIGN_KEY_CHECKS = 1;
-```
